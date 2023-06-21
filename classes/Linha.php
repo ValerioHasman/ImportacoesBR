@@ -2,31 +2,35 @@
 
 namespace classes;
 
-use Error;
-
 class Linha
 {
-  private string $linha;
+  
+  private array $linha;
 
   public function __set($atributo, $value): void
   {
     if ($atributo == 'linha') {
-      if(gettype($value) != gettype(Array())){
-        throw new Error('Era para ser um Array!!!');
-      }
-      $emTexto = implode(';', $value);
-      $this->$atributo = $emTexto;
+      $this->$atributo = $this->removeDesinteressante($value);
     }
   }
 
   public function __get($atributo)
   {
-    if($atributo == 'linha'){
-      return explode(';', $this->$atributo );
-    } else {
-      return $this->$atributo;
-    }
-    
+    return $this->$atributo;
   }
 
+  function removeDesinteressante(array $array) : array {
+    unset($array[0]);
+    unset($array[3]);
+    unset($array[4]);
+    unset($array[6]);
+    unset($array[7]);
+    unset($array[8]);
+    unset($array[9]);
+    $interesse = [];
+    foreach($array as $dado){
+      $interesse[] = $dado;
+    }
+    return $interesse;
+  }
 }
