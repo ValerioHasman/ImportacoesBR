@@ -2,7 +2,7 @@
 
 namespace util;
 
-final class Operacoes
+abstract class Operacoes
 {
   public static function apenasUm(string $dado, array &$array) : void
   {
@@ -16,5 +16,10 @@ final class Operacoes
     if(!$dadoExiste){
       $array[] = strval($dado);
     }
+  }
+
+  public static function ordenarArray(array &$array) : void
+  {
+    sort($array);
   }
 }
