@@ -1,6 +1,7 @@
 <?php
 spl_autoload_register();
 
+use classes\CriarCSV;
 use classes\CSVs;
 use planilha\CriaPorUF;
 
@@ -11,7 +12,7 @@ $caminhoResultados = __DIR__.'\resultado';
 processar($caminhoExportacao, $caminhoImportacao, $caminhoResultados);
 
 function processar($caminhoExportacao, $caminhoImportacao, $caminhoResultados){
-  ini_set('memory_limit', '4096M'); // Habilite ou mude o valor desta linha se houver faltar de memória. 4096 1024
+  ini_set('memory_limit', '4096M'); // Habilite ou mude o valor desta linha se houver faltar de memória.
 
   $csvArrayEXP = new CSVs();
   $csvArrayEXP->CSVParaArray($caminhoExportacao);
@@ -21,21 +22,16 @@ function processar($caminhoExportacao, $caminhoImportacao, $caminhoResultados){
   $csvArrayIMP->CSVParaArray($caminhoImportacao);
   echo "Importacao tratada, memória usada: " . memory_get_usage() . PHP_EOL;
 
-
-  /*$agrupados = new Agrupamento();
-  $agrupados->agrupar($csvArrayEXP, $csvArrayIMP);
-  echo "Agrupamento tratado, memória usada: " . memory_get_usage() . PHP_EOL;
-  $planila = new CriaPorUF($agrupados, $csvArrayEXP, $csvArrayIMP, $caminhoResultados);
-  $planila->criaPlanilhaPorUF();*/
-
   $planila = new CriaPorUF();
   $planila->criaArrayPorUF($csvArrayEXP, $csvArrayIMP);
+  echo "Arrays criados, memória usada: " . memory_get_usage() . PHP_EOL;
 
-  var_export( $planila->ufs['SP']['27101911'] );
-  echo PHP_EOL;
-  var_export( $planila->numeroDeIteracoes );
-  echo PHP_EOL;
+  $csvArrayEXP = null;
+  $csvArrayIMP = null;
 
+  foreach($planila->ufs as $nome => $planilhaUF){
+    CriarCSV::ArrayParaCSV($planilhaUF, $planila->cabecalho, $caminhoResultados, $nome);
+  }
 
   echo "Fim, memória usada: " . memory_get_usage() . PHP_EOL;
   

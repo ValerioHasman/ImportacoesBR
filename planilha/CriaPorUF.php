@@ -6,83 +6,44 @@ use classes\CSVs;
 
 class CriaPorUF
 {
-  /*private Agrupamento $agrupado;
-  private CSVs $exportacao;
-  private CSVs $importacao;
-  private string $caminhoResultados;*/
   private array $ufs;
-
+  private array|false $cabecalho;
 
   public function __set($atributo, $value): void
   {
     if ($atributo == 'ufs') {
       $this->$atributo = $value;
     }
-    /*if ($atributo == 'agrupado') {
+    if ($atributo == 'cabecalho') {
       $this->$atributo = $value;
     }
-    if ($atributo == 'exportacao') {
-      $this->$atributo = $value;
-    }
-    if ($atributo == 'importacao') {
-      $this->$atributo = $value;
-    }
-    if ($atributo == 'caminhoResultados') {
-      $this->$atributo = $value;
-    }*/
   }
 
   public function __get($atributo)
   {
+    if('cabecalho'){
+      if(!isset($this->$atributo)){
+        if(!isset($this->ufs)){
+          return false;
+        }
+        foreach($this->ufs as $uf){
+          foreach($uf as $ncm){
+            foreach($ncm as $chave => $valor){
+              $this->$atributo[$chave] = $chave;
+            }
+            return $this->$atributo;
+          }
+        }
+      }
+      return $this->$atributo;
+    }
     return $this->$atributo;
   }
 
   public function __construct()
   {
     $this->__set('ufs', []);
-    /*$this->__set('agrupado', $agrupado);
-    $this->__set('exportacao', $exportacao);
-    $this->__set('importacao', $importacao);
-    $this->__set('caminhoResultados', $caminhoResultados);*/
   }
-
-  /*public function criaPlanilhaPorUF() : void
-  {
-    foreach($this->agrupado->ufs as $uf){
-      $planilha = [];
-      foreach($this->agrupado->ufNcms[$uf] as $ncm){
-        echo $ncm . " do " . $uf . PHP_EOL;
-        $linhaPlanilha = [];
-        $linhaPlanilha['NCM'] = $ncm;
-        $netExpAnual = 0;
-        $netImpAnual = 0;
-        foreach($this->agrupado->meses as $mes){
-          $valorFobEXP = $this->valorFob($ncm, $uf, $mes, $this->exportacao);
-          $valorFobIMP = $this->valorFob($ncm, $uf, $mes, $this->importacao);
-          $netExpAnual += intval($valorFobEXP);
-          $netImpAnual += intval($valorFobIMP);
-          $linhaPlanilha["Exp_".$this->nomeMes($mes)] = $valorFobEXP;
-          $linhaPlanilha["Imp_".$this->nomeMes($mes)] = $valorFobIMP;
-          $linhaPlanilha["Net_".$this->nomeMes($mes)] = intval($valorFobEXP) - intval($valorFobIMP);
-        }
-        $linhaPlanilha["Exp_".$this->exportacao->ano] = $netExpAnual;
-        $linhaPlanilha["Imp_".$this->exportacao->ano] = $netImpAnual;
-        $linhaPlanilha["Net_".$this->exportacao->ano] = $netExpAnual - $netImpAnual;
-        $planilha[] = $linhaPlanilha;
-        echo "NCM ok, $ncm de $uf; memória usada: " . memory_get_usage() . PHP_EOL;
-        break;
-      }
-      $cabecalho = [];
-      foreach($planilha[0] as $chave => $dado){
-        $cabecalho[$chave] = $chave;
-      }
-      echo PHP_EOL;
-      var_export($cabecalho);
-      echo PHP_EOL;
-      exit();
-      CriarCSV::ArrayParaCSV($planilha, $cabecalho, $this->caminhoResultados, $uf);
-    }
-  }*/
 
   public function criaArrayPorUF(CSVs $exportacao, CSVs $importacao) : void
   {
@@ -103,7 +64,6 @@ class CriaPorUF
       }
 
       $this->setNoMes($this->ufs[$uf][$ncm], $mes, $val, $tipo, $ano);
-      $this->numeroDeIteracoes++;
     }
   }
 
@@ -150,19 +110,6 @@ class CriaPorUF
       'Net_' . $ano => 0,
     );
   }
-
-  /*private function valorFob(string $ncm, string $uf, string $mes, CSVs &$csv) : string {
-    $valor = 0;
-    foreach($csv->csvArray as $dado){
-      if($dado->linha['CO_NCM'] === $ncm && $dado->linha['CO_MES'] === $mes && $dado->linha['SG_UF_NCM'] === $uf){
-        $valor += intval($dado->linha['VL_FOB']);
-      }
-    }
-    if($valor !== 0){
-      return "$valor";
-    }
-    return "";
-  }*/
 
   private function nomeMes(string|int $mes) : string
   {
@@ -218,8 +165,12 @@ class CriaPorUF
     $nomeMes      = $this->nomeMes($mes);
     $colunaMes    = $tipo . '_' . $nomeMes;
     $colunaNet    = 'Net' . '_' . $nomeMes;
+    $colunaCsvAno = $tipo . '_' . $ano;
     $colunaNetAno = 'Net' . '_' . $ano;
     $ncm[$colunaMes] += $numVal;
+
+    /** Nets */
+
     switch ($tipo) {
       case 'Exp':
         $valexp = $ncm[$colunaMes];
@@ -235,10 +186,14 @@ class CriaPorUF
     }
     $ncm[$colunaNet] = $valexp - $valimp;
     $ncm[$colunaNetAno] = 0;
+    $ncm[$colunaCsvAno] = 0;
 
     foreach($ncm as $chave => $valor){
       if(substr($chave, 0, 4) == "Net_" && substr($chave, 4, 4) != $ano ){
         $ncm[$colunaNetAno] += $valor;
+      }
+      if(substr($chave, 0, 3) == $tipo && substr($chave, 4, 4) != $ano ){
+        $ncm[$colunaCsvAno] += $valor;
       }
     }
   }

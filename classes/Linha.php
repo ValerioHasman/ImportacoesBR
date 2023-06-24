@@ -2,6 +2,8 @@
 
 namespace classes;
 
+use Error;
+
 class Linha
 {
   
@@ -10,6 +12,9 @@ class Linha
   public function __set($atributo, $value): void
   {
     if ($atributo == 'linha') {
+      if(!is_array($value)){
+        throw new Error("O valor recebido não corresponde ao array esperado");
+      }
       $this->$atributo = $this->removeDesinteressante($value);
     }
   }
