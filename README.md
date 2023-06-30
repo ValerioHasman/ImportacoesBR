@@ -13,3 +13,7 @@ Antes de executar o `index.php` certifique-se de ter especificado os respectivos
 [📉 Importação 2022](http://mdic.gov.br/balanca/bd/comexstat-bd/ncm/IMP_2022.csv)
 
 *Este projeto usa a última versão do PHP.*
+
+## Execução da `Macro.ods`
+
+A macro usa a biblioteca LibreMacro, colocando o caminho dos resultados `.csv` no campo caminho e executando, as planilhas em `.csv` serão processadas e exibidas com uma melhor visualização.
