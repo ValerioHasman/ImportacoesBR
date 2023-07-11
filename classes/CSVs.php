@@ -18,7 +18,7 @@ class CSVs
   {
 
     if(!file_exists($caminho)){
-      die('Arquivo de exportação ou importação ausente!!!' . PHP_EOL . 'Verifique as variáveis $caminhoExportacao e $caminhoImportacao no index.php.');
+      die('Arquivo de exportação ou importação ausente!!!' . PHP_EOL . 'Verifique as variáveis $caminhoExportacao e $caminhoImportacao no index.php.' . PHP_EOL);
     }
 
     $csv = fopen($caminho, 'r');

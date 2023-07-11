@@ -8,7 +8,7 @@ use planilha\CriaPorUF;
 
 $caminhoExportacao = __DIR__ . DIRECTORY_SEPARATOR . 'EXP_2022.csv';
 $caminhoImportacao = __DIR__ . DIRECTORY_SEPARATOR . 'IMP_2022.csv';
-$caminhoResultados = __DIR__ . DIRECTORY_SEPARATOR . 'resultado'.DIRECTORY_SEPARATOR."rmm";
+$caminhoResultados = __DIR__ . DIRECTORY_SEPARATOR . 'resultado';
 
 processar($caminhoExportacao, $caminhoImportacao, $caminhoResultados);
 
