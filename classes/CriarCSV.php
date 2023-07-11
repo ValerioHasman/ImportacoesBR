@@ -6,6 +6,11 @@ class CriarCSV
 {
   public static function ArrayParaCSV(array $array, array|false $cabecalho = false, string $caminho, string $nomeParaOArquivo = 'arquivo', $delimitador = ';') : void
   {
+
+    if(!file_exists($caminho)){
+      mkdir($caminho, 0777, true);
+    }
+    
     $csv = fopen($caminho."\\".$nomeParaOArquivo.".csv", 'w+');
     
     if($cabecalho){

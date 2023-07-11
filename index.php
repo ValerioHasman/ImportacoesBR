@@ -1,13 +1,14 @@
 <?php
-spl_autoload_register();
+
+require_once('./autoload.php');
 
 use classes\CriarCSV;
 use classes\CSVs;
 use planilha\CriaPorUF;
 
-$caminhoExportacao = __DIR__.'\EXP_2022.csv';
-$caminhoImportacao = __DIR__.'\IMP_2022.csv';
-$caminhoResultados = __DIR__.'\resultado';
+$caminhoExportacao = __DIR__ . DIRECTORY_SEPARATOR . 'EXP_2022.csv';
+$caminhoImportacao = __DIR__ . DIRECTORY_SEPARATOR . 'IMP_2022.csv';
+$caminhoResultados = __DIR__ . DIRECTORY_SEPARATOR . 'resultado'.DIRECTORY_SEPARATOR."rmm";
 
 processar($caminhoExportacao, $caminhoImportacao, $caminhoResultados);
 
@@ -34,5 +35,5 @@ function processar($caminhoExportacao, $caminhoImportacao, $caminhoResultados){
   }
 
   echo "Fim, memória usada: " . memory_get_usage() . PHP_EOL;
-  
+
 }

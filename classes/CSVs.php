@@ -16,6 +16,11 @@ class CSVs
 
   public function CSVParaArray(string $caminho, string $delimitador = ';', bool $temCabecalho = true): void
   {
+
+    if(file_exists($caminho)){
+      die('Arquivo de exportação ou importação ausente!!!' . PHP_EOL . 'Verifique as variáveis $caminhoExportacao e $caminhoImportacao no index.php.');
+    }
+
     $csv = fopen($caminho, 'r');
     $dados = [];
     if($temCabecalho){
