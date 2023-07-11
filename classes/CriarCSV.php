@@ -11,7 +11,7 @@ class CriarCSV
       mkdir($caminho, 0777, true);
     }
     
-    $csv = fopen($caminho."\\".$nomeParaOArquivo.".csv", 'w+');
+    $csv = fopen($caminho . DIRECTORY_SEPARATOR . $nomeParaOArquivo.".csv", 'w+');
     
     if($cabecalho){
       fputcsv($csv, $cabecalho, $delimitador);
